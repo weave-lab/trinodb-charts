@@ -55,47 +55,47 @@ jobs:
   #     - name: Run tests
   #       run: ./test.sh ${{ matrix.args }}
 
-  docs:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.x'
-      - uses: pre-commit/action@v3.0.1
+  # docs:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: actions/setup-python@v5
+  #       with:
+  #         python-version: '3.x'
+  #     - uses: pre-commit/action@v3.0.1
 
   # Everything above is CI, everything here and below is for releases and runs only on non-pull-request events
-  sync-readme:
-    needs: [lint, docs]
-    runs-on: ubuntu-latest
-    if: github.event_name != 'pull_request'
-    steps:
-      - name: Checkout main
-        uses: actions/checkout@v4
-        with:
-          path: main
-      - name: Checkout gh-pages
-        uses: actions/checkout@v4
-        with:
-          ref: gh-pages
-          path: gh-pages
-      - name: Copy all README files from main to gh-pages
-        run: |
-          cd main
-          # cp --parents preserves directory structure
-          find . -name 'README.md' -exec cp --parents '{}' "../gh-pages/" ';'
-      - name: Commit changes to gh-pages and push
-        run: |
-          cd gh-pages
-          git add .
-          git config user.name "GITHUB_ACTOR"
-          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
-          # Commit only if changes exist to avoid failure in this step
-          git diff-index --quiet HEAD || git commit --signoff -m "Sync READMEs from main"
-          git push
+  # sync-readme:
+  #   needs: [lint, docs]
+  #   runs-on: ubuntu-latest
+  #   if: github.event_name != 'pull_request'
+  #   steps:
+  #     - name: Checkout main
+  #       uses: actions/checkout@v4
+  #       with:
+  #         path: main
+  #     - name: Checkout gh-pages
+  #       uses: actions/checkout@v4
+  #       with:
+  #         ref: gh-pages
+  #         path: gh-pages
+  #     - name: Copy all README files from main to gh-pages
+  #       run: |
+  #         cd main
+  #         # cp --parents preserves directory structure
+  #         find . -name 'README.md' -exec cp --parents '{}' "../gh-pages/" ';'
+  #     - name: Commit changes to gh-pages and push
+  #       run: |
+  #         cd gh-pages
+  #         git add .
+  #         git config user.name "GITHUB_ACTOR"
+  #         git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+  #         # Commit only if changes exist to avoid failure in this step
+  #         git diff-index --quiet HEAD || git commit --signoff -m "Sync READMEs from main"
+  #         git push
 
   release:
-    needs: [lint, docs, sync-readme]
+    needs: [lint]
     runs-on: ubuntu-latest
     if: github.event_name != 'pull_request'
     steps:
