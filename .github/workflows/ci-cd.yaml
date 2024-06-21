@@ -113,4 +113,4 @@ jobs:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
           CR_GENERATE_RELEASE_NOTES: true
           # If we didn't bump the chart version then we can skip the release
-          CR_SKIP_EXISTING: true
+          CR_SKIP_EXISTING: false
