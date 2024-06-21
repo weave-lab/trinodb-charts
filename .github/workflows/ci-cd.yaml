@@ -73,7 +73,6 @@ jobs:
       - name: Checkout main
         uses: actions/checkout@v4
         with:
-          ref: build
           path: main
       - name: Checkout gh-pages
         uses: actions/checkout@v4
