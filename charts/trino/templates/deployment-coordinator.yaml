@@ -200,6 +200,8 @@ spec:
         - name: jmx-exporter
           image: {{ .Values.jmx.exporter.image }}
           imagePullPolicy: {{ .Values.jmx.exporter.pullPolicy }}
+          securityContext:
+            {{- toYaml .Values.jmx.exporter.securityContext | nindent 12 }}
           args:
             - "{{ .Values.jmx.exporter.port }}"
             - /etc/jmx-exporter/jmx-exporter-config.yaml

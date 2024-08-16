@@ -641,6 +641,7 @@ Fast distributed SQL query engine for big data analytics that helps you explore 
           value: '$2'
           help: 'ThreadCount (java.lang<type=Threading><>ThreadCount)'
           type: UNTYPED
+* `jmx.exporter.securityContext` - object, default: `{}`
 * `serviceMonitor.enabled` - bool, default: `false`  
 
   Set to true to create resources for the [prometheus-operator](https://github.com/prometheus-operator/prometheus-operator).

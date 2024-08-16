@@ -740,6 +740,7 @@ jmx:
     pullPolicy: Always
     port: 5556
     configProperties: []
+    securityContext: {}
     # jmx.exporter.configProperties -- JMX Config Properties is mounted to /etc/jmx-exporter/jmx-exporter-config.yaml
     # @raw
     # Example:
