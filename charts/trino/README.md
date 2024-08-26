@@ -1,6 +1,6 @@
 # trino
 
-![Version: 0.24.0-rc.2](https://img.shields.io/badge/Version-0.24.0--rc.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 449](https://img.shields.io/badge/AppVersion-449-informational?style=flat-square)
+![Version: 0.27.0](https://img.shields.io/badge/Version-0.27.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 454](https://img.shields.io/badge/AppVersion-454-informational?style=flat-square)
 
 Fast distributed SQL query engine for big data analytics that helps you explore your data universe
 
@@ -86,7 +86,17 @@ Fast distributed SQL query engine for big data analytics that helps you explore 
 * `accessControl` - object, default: `{}`  
 
   [System access control](https://trino.io/docs/current/security/built-in-system-access-control.html) configuration.
-  Example:
+  Set the type property to either:
+  * `configmap`, and provide the rule file contents in `rules`,
+  * `properties`, and provide configuration properties in `properties`.
+  Properties example:
+  ```yaml
+  type: properties
+  properties: |
+      access-control.name=custom-access-control
+      access-control.custom_key=custom_value
+  ```
+  Config map example:
   ```yaml
    type: configmap
    refreshPeriod: 60s
@@ -222,7 +232,16 @@ Fast distributed SQL query engine for big data analytics that helps you explore 
   ```yaml
    - io.airlift=DEBUG
   ```
-* `additionalExchangeManagerProperties` - list, default: `[]`
+* `additionalExchangeManagerProperties` - list, default: `[]`  
+
+  [Exchange manager properties](https://trino.io/docs/current/admin/fault-tolerant-execution.html#exchange-manager).
+  Example:
+  ```yaml
+   - exchange.s3.region=object-store-region
+   - exchange.s3.endpoint=your-object-store-endpoint
+   - exchange.s3.aws-access-key=your-access-key
+   - exchange.s3.aws-secret-key=your-secret-key
+  ```
 * `eventListenerProperties` - list, default: `[]`  
 
   [Event listener](https://trino.io/docs/current/develop/event-listener.html#event-listener) properties. To configure multiple event listeners, add them in `coordinator.additionalConfigFiles` and `worker.additionalConfigFiles`, and set the `event-listener.config-files` property in `additionalConfigProperties` to their locations.
@@ -293,9 +312,8 @@ Fast distributed SQL query engine for big data analytics that helps you explore 
        imagePullPolicy: IfNotPresent
        command: ['sleep', '1']
   ```
-* `securityContext` - object, default: `{"runAsGroup":1000,"runAsUser":1000}`  
-
-  [Container security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod) configuration.
+* `securityContext.runAsUser` - int, default: `1000`
+* `securityContext.runAsGroup` - int, default: `1000`
 * `containerSecurityContext` - object, default: `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]}}`  
 
   [Container security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container) configuration.
@@ -310,6 +328,9 @@ Fast distributed SQL query engine for big data analytics that helps you explore 
 * `service.annotations` - object, default: `{}`
 * `service.type` - string, default: `"ClusterIP"`
 * `service.port` - int, default: `8080`
+* `service.nodePort` - string, default: `""`  
+
+  The port the service listens on the host, for NodePort type. If not set, Kubernetes will [allocate a port automatically](https://kubernetes.io/docs/concepts/services-networking/service/#nodeport-custom-port).
 * `auth` - object, default: `{}`  
 
   Available authentication methods.
@@ -641,7 +662,6 @@ Fast distributed SQL query engine for big data analytics that helps you explore 
           value: '$2'
           help: 'ThreadCount (java.lang<type=Threading><>ThreadCount)'
           type: UNTYPED
-* `jmx.exporter.securityContext` - object, default: `{}`
 * `serviceMonitor.enabled` - bool, default: `false`  
 
   Set to true to create resources for the [prometheus-operator](https://github.com/prometheus-operator/prometheus-operator).
